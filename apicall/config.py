@@ -50,7 +50,7 @@ class BasicAuth:
 @dataclass_json
 @dataclass(frozen=True)
 class Config:
-    headers: typing.Tuple[HttpHeader, ...] = dataclasses.field(default=tuple())
+    headers: typing.Tuple[HttpHeader, ...] = dataclasses.field(default_factory=tuple)
     basic: typing.Optional[BasicAuth] = dataclasses.field(default=None)
     endpoints: typing.Tuple[str, ...] = dataclasses.field(
         default=DEFAULT_ENDPOINTS)
