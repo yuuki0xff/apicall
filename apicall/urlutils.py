@@ -21,7 +21,7 @@ def concat_urls(
     escaped_queries = list(escape_query(q) for q in queries)
     if u.query:
         escaped_queries.insert(0, u.query)
-    query_string = tuple('&'.join(escaped_queries))
+    query_string = '&'.join(escaped_queries)
 
     if is_absolute_url(url):
         components = (
@@ -36,7 +36,7 @@ def concat_urls(
             # fragment
             '',
         )
-        return urllib.parse.urlunsplit(components),  # type: ignore
+        return urllib.parse.urlunsplit(components),
 
     concated_urls = []
     for endpoint in endpoints:
@@ -54,7 +54,6 @@ def concat_urls(
             # fragment
             '',
         )
-        concated_urls.append(
-            urllib.parse.urlunsplit(components))  # type: ignore
+        concated_urls.append(urllib.parse.urlunsplit(components))
 
-    return tuple(concated_urls)  # type: ignore
+    return tuple(concated_urls)
