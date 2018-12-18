@@ -36,7 +36,7 @@ def concat_urls(
             # fragment
             '',
         )
-        return urllib.parse.urlunsplit(components),
+        return urllib.parse.urlunsplit(components),  # type: ignore
 
     concated_urls = []
     for endpoint in endpoints:
@@ -54,6 +54,7 @@ def concat_urls(
             # fragment
             '',
         )
-        concated_urls.append(urllib.parse.urlunsplit(components))
+        concated_urls.append(
+            urllib.parse.urlunsplit(components))  # type: ignore
 
-    return tuple(concated_urls)
+    return tuple(concated_urls)  # type: ignore
