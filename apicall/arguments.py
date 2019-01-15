@@ -6,6 +6,7 @@ import typing
 import os
 import abc
 import dataclasses
+import json
 from . import config
 from . import restapi
 from . import urlutils
@@ -275,6 +276,8 @@ class Jsonrpc(SubCommand):
 
     def build_in(self, p: argparse.ArgumentParser):
         p.add_argument('--raw', action='store_true')
+        p.add_argument('--raw-input', action='store_true')
+        p.add_argument('--keyword-args', action='store_true')
         p.add_argument('--verbose', action='count', default=0)
         p.add_argument('-H', '--header', action='append')
         p.add_argument('--accept')
@@ -283,6 +286,21 @@ class Jsonrpc(SubCommand):
         p.add_argument('args', nargs='*')
 
     def __call__(self, ca: CommandArgs) -> ExitCode:
+        args = ()
+        kwargs = {}
+
+        if ca.ns.raw_input:
+            convert = json.loads
+        else:
+            convert = lambda a: a
+
+        if ca.ns.keyword_args:
+            for a in ca.ns.args:
+                k, v = a.split('=', maxsplit=1)
+                kwargs[k] = convert(v)
+        else:
+            args = tuple(convert(a) for a in ca.ns.args)
+
         try:
             res = jsonrpc.Endpoint(
                 urls=ca.conf.endpoints,
@@ -290,7 +308,8 @@ class Jsonrpc(SubCommand):
                 basic=ca.conf.basic,
             ).send(jsonrpc.Request(
                 ca.ns.method,
-                ca.ns.args,
+                *args,
+                **kwargs
             ))
         except jsonrpc.ConnectionError:
             print(
