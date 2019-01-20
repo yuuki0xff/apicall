@@ -136,7 +136,7 @@ setup(
         'tabulate',
         'dataclasses-json',
         'requests',
-        'jsonrpcclient',
+        'jsonrpcclient>=3.3.1',
     ],
 
     setup_requires=[
