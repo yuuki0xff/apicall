@@ -160,10 +160,14 @@ def load() -> typing.Tuple[str, Config]:
     # The cause of this problem is bug of dataclasses_json library...
     # TODO: Bug report to dataclasses_json.
     conf = Config.from_json(js)  # type: ignore
-    fixed_conf = dataclasses.replace(
+    conf = dataclasses.replace(
         conf, headers=tuple(HttpHeader(**h) for h in conf.headers))
+    if conf.basic is not None:
+        conf = dataclasses.replace(
+            conf, basic=BasicAuth(**conf.basic)
+        )
 
-    return fname, fixed_conf
+    return fname, conf
 
 
 def load_or_default() -> typing.Tuple[str, Config]:
