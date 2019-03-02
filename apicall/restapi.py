@@ -32,6 +32,7 @@ class Request:
                     self.method,
                     url,
                     headers=self.dict_headers,
+                    auth=(self.basic.user, self.basic.password) if self.basic else None,
                     data=self.data,
                 )
 
