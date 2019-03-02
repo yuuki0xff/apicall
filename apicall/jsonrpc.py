@@ -1,15 +1,16 @@
 import typing
 from dataclasses import dataclass
 from . import config
-import requests
+
 import jsonrpcclient  # type: ignore
+import jsonrpcclient.client
 import jsonrpcclient.exceptions  # type: ignore
 from jsonrpcclient.requests import Request  # type: ignore
 from jsonrpcclient.exceptions import ReceivedErrorResponseError, ReceivedNon2xxResponseError as InvalidResponseError  # type: ignore
 
-
-class ConnectionError(Exception):
-    pass
+from . import config
+from . import restapi
+from .restapi import ConnectionError
 
 
 @dataclass(frozen=True)
@@ -19,11 +20,19 @@ class Endpoint:
     basic: typing.Optional[config.BasicAuth]
 
     def send(self, req):
-        for url in self.urls:
-            try:
-                return jsonrpcclient.send(url, req)
-            except requests.ConnectionError:
-                # Maybe... hostname or port is incorrect.
-                # Try to other urls.
-                continue
-        raise ConnectionError()
+        return JsonRpcClient(self).send(req)
+
+
+class JsonRpcClient(jsonrpcclient.client.Client):
+    def __init__(self, endpoint: Endpoint):
+        self.endpoint = endpoint
+
+    def send_message(self, request: str, response_expected: bool, **kwargs) -> jsonrpcclient.Response:
+        res = restapi.Request(
+            method='POST',
+            urls=self.endpoint.urls,
+            headers=self.endpoint.headers,
+            basic=self.endpoint.basic,
+            data=request.encode('utf8'),
+        ).fetch()
+        return jsonrpcclient.Response(text=res.body, raw=res)
