@@ -134,7 +134,7 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[  # Optional
         'tabulate',
-        'dataclasses-json',
+        'dataclasses-json>=0.5.0',
         'requests',
         'jsonrpcclient>=3.3.1,<4.0.0',
     ],

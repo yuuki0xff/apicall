@@ -153,20 +153,7 @@ def load() -> typing.Tuple[str, Config]:
     with open(fname) as f:
         js = f.read()
 
-    # Workaround for an issue that data type of Config.headers[*] is wrong.
-    # Expected type is HttpHeader object, but actual type is dict object.
-    # This workaround converts the data type from dict to HttpHeader.
-    #
-    # The cause of this problem is bug of dataclasses_json library...
-    # TODO: Bug report to dataclasses_json.
-    conf = Config.from_json(js)  # type: ignore
-    conf = dataclasses.replace(
-        conf, headers=tuple(HttpHeader(**h) for h in conf.headers))
-    if conf.basic is not None:
-        conf = dataclasses.replace(
-            conf, basic=BasicAuth(**conf.basic)
-        )
-
+    conf: Config = Config.from_json(js)  # type: ignore
     return fname, conf
 
 
