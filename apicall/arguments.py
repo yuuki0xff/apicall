@@ -289,6 +289,7 @@ class Jsonrpc(SubCommand):
         args = ()
         kwargs = {}
 
+        convert: typing.Callable
         if ca.ns.raw_input:
             convert = json.loads
         else:

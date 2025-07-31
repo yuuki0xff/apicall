@@ -63,7 +63,7 @@ def pprint(data: typing.Union[bytes, str], raw: bool = False, file=None):
 
     context = contextlib.nullcontext()  # type: ignore
     if file is not None:
-        context = contextlib.redirect_stdout(file)
+        context = contextlib.redirect_stdout(file)  # type: ignore
 
     with context:
         if raw or not sys.stdout.isatty():

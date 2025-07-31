@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from . import config
 
 import jsonrpcclient  # type: ignore
-import jsonrpcclient.client
+import jsonrpcclient.client  # type: ignore
 import jsonrpcclient.exceptions  # type: ignore
 from jsonrpcclient.requests import Request  # type: ignore
 from jsonrpcclient.exceptions import ReceivedErrorResponseError, ReceivedNon2xxResponseError as InvalidResponseError  # type: ignore
