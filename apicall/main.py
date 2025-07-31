@@ -3,7 +3,7 @@ import warnings
 warnings.filterwarnings(
     'ignore',
     message='^`NoneType` object ',
-    module='^dataclasses_json\.',
+    module='^dataclasses_json\\.',
     category=RuntimeWarning)
 
 import sys
