@@ -240,11 +240,11 @@ class Rest(SubCommand):
             pprint(
                 'ERROR: Could not connect to server.\n'
                 'Please check endpoint urls and HTTP server status.',
-                file=sys.stderr)
+                file=sys.stderr, raw=ca.ns.raw)
             return ExitFailedToConnect
 
         try:
-            pprint(response.raw_body)
+            pprint(response.raw_body, raw=ca.ns.raw)
             return ExitOk
         except printutils.SubprocessError:
             return ExitSubprocessError
@@ -322,11 +322,11 @@ class Jsonrpc(SubCommand):
                 file=sys.stderr)
             return ExitFailedToConnect
         except jsonrpc.ErrorResponse as e:
-            pprint(e.json)
+            pprint(e.json, raw=ca.ns.raw)
             return ExitInvalidResponse
 
         try:
-            pprint(res)
+            pprint(res, raw=ca.ns.raw)
             return ExitOk
         except printutils.SubprocessError:
             return ExitSubprocessError
