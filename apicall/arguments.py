@@ -286,6 +286,11 @@ class Jsonrpc(SubCommand):
         p.add_argument('args', nargs='*')
 
     def __call__(self, ca: CommandArgs) -> ExitCode:
+        default_headers = (
+            config.HttpHeader('content-type', 'application/json'),
+            config.HttpHeader('accept', 'application/json'),
+        )
+
         convert: typing.Callable
         if ca.ns.raw_input:
             convert = json.loads
@@ -307,7 +312,7 @@ class Jsonrpc(SubCommand):
         try:
             res = jsonrpc.Endpoint(
                 urls=ca.conf.endpoints,
-                headers=ca.conf.headers + parse_headers(ca.ns),
+                headers=default_headers + ca.conf.headers + parse_headers(ca.ns),
                 basic=ca.conf.basic,
             ).send(req)
         except restapi.ConnectionError:
