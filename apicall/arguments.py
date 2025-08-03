@@ -275,10 +275,10 @@ class Jsonrpc(SubCommand):
     NAME = 'jsonrpc'
 
     def build_in(self, p: argparse.ArgumentParser):
-        p.add_argument('--raw', action='store_true')
-        p.add_argument('--raw-input', action='store_true')
-        p.add_argument('--keyword-args', action='store_true')
-        p.add_argument('--verbose', action='count', default=0)
+        p.add_argument('-R', '--raw', action='store_true')
+        p.add_argument('-r', '--raw-input', action='store_true')
+        p.add_argument('-k', '--keyword-args', action='store_true')
+        p.add_argument('-v', '--verbose', action='count', default=0)
         p.add_argument('-H', '--header', action='append')
         p.add_argument('--accept')
         p.add_argument('--content-type', '--type')
