@@ -36,6 +36,15 @@ def is_json(data: bytes) -> bool:
     except json.JSONDecodeError:
         return False
 
+def has_jq() -> bool:
+    """ Check if jq command is available. """
+    try:
+        subprocess.run(['jq', '--version'],
+            stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, check=True)
+        return True
+    except (subprocess.SubprocessError, OSError):
+        return False
+
 
 def print_hex(data: bytes):
     with tempfile.TemporaryFile() as f:
@@ -47,7 +56,14 @@ def print_hex(data: bytes):
 
 
 def print_json(data: bytes):
-    """ Print JSON to terminal through jq command. """
+    """ Print JSON to terminal through jq command.
+
+    If the jq command is not available, it prints the JSON as is.
+    """
+    if not has_jq():
+        sys.stdout.buffer.write(data)
+        return
+
     with tempfile.TemporaryFile() as f:
         f.write(data)
         f.seek(0)
