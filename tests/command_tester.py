@@ -27,11 +27,13 @@ class StartCondition(typing.NamedTuple):
         )
 
 
-class ParsedCondition(typing.NamedTuple):
+class ParsedCondition:
     """ 引数のパース完了時点での条件 """
-    start_cond: StartCondition
-    ca: arg.CommandArgs
-    result: arg.ParseResult
+    def __init__(self, start_cond: StartCondition, ca: arg.CommandArgs,
+                 result: arg.ParseResult):
+        self.start_cond = start_cond
+        self.ca = ca
+        self.result = result
 
     def exec(self) -> StopCondition:
         out = tempfile.TemporaryFile('w+t')

@@ -88,6 +88,10 @@ class Response:
         return self._result.content
 
     @property
+    def json(self):
+        return self._result.json()
+
+    @property
     def turnaround_time(self):
         return self._result.elapsed
 

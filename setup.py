@@ -136,7 +136,7 @@ setup(
         'tabulate',
         'dataclasses-json>=0.5.0',
         'requests',
-        'jsonrpcclient>=3.3.1,<4.0.0',
+        'jsonrpcclient>=4.0.0,<5',
     ],
 
     setup_requires=[
@@ -145,6 +145,7 @@ setup(
 
     tests_require=[
         'pytest',
+        'types-requests',
     ],
 
     # List additional groups of dependencies here (e.g. development
@@ -160,6 +161,7 @@ setup(
             'yapf',
             'mypy',
             'pytest',
+            'types-requests',
         ],
     },
 

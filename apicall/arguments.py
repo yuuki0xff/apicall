@@ -286,47 +286,42 @@ class Jsonrpc(SubCommand):
         p.add_argument('args', nargs='*')
 
     def __call__(self, ca: CommandArgs) -> ExitCode:
-        args = ()
-        kwargs = {}
-
         convert: typing.Callable
         if ca.ns.raw_input:
             convert = json.loads
         else:
             convert = lambda a: a
 
+        params: typing.Union[tuple, dict, None]
         if ca.ns.keyword_args:
+            params = {}
             for a in ca.ns.args:
                 k, v = a.split('=', maxsplit=1)
-                kwargs[k] = convert(v)
+                params[k] = convert(v)
+        elif ca.ns.args:
+            params = tuple(convert(a) for a in ca.ns.args)
         else:
-            args = tuple(convert(a) for a in ca.ns.args)
+            params = None
+        req = jsonrpc.Request(ca.ns.method, params)
 
         try:
             res = jsonrpc.Endpoint(
                 urls=ca.conf.endpoints,
                 headers=ca.conf.headers + parse_headers(ca.ns),
                 basic=ca.conf.basic,
-            ).send(jsonrpc.Request(
-                ca.ns.method,
-                *args,
-                **kwargs
-            ))
-        except jsonrpc.ConnectionError:
+            ).send(req)
+        except restapi.ConnectionError:
             print(
                 'ERROR: Could not connect to server.\n'
                 'Please check endpoint urls and HTTP server status.',
                 file=sys.stderr)
             return ExitFailedToConnect
-        except jsonrpc.InvalidResponseError as e:
-            pprint(str(e).encode())
+        except jsonrpc.ErrorResponse as e:
+            pprint(e.json)
             return ExitInvalidResponse
-        except jsonrpc.ReceivedErrorResponseError as e:
-            pprint(str(e.response).encode())
-            return ExitErrorReponse
 
         try:
-            pprint(res.text.encode())
+            pprint(res)
             return ExitOk
         except printutils.SubprocessError:
             return ExitSubprocessError
