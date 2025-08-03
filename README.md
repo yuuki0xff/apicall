@@ -31,8 +31,9 @@ $ restcall post /users -d '{"name": "bob"}'
 $ restcall get /users/10
 $ restcall get /users/search 'name=bob'
 $ restcall delete /users/10
+$ restcall get https://example.com/api
 
-$ apicall endpoint https://example.cmo/json-rpc/v1
+$ apicall endpoint https://example.com/json-rpc/v1
 $ jsonrpccall create_account 'bob'
 $ jsonrpccall get_account 10
 $ jsonrpccall search_accounts_by_name 'bob'
