@@ -49,7 +49,12 @@ class Endpoint:
     headers: typing.Tuple[config.HttpHeader, ...]
     basic: typing.Optional[config.BasicAuth]
 
-    def send(self, req: Request)->str:
+    def send(
+            self,
+            req: Request,
+            verbose: int = 0,
+            logging_cb: typing.Optional[typing.Callable[[str], None]] = None,
+    )->str:
         req_rpc = req.to_json()
         res_raw = restapi.Request(
             method='POST',
@@ -57,7 +62,7 @@ class Endpoint:
             headers=self.headers,
             basic=self.basic,
             data=json.dumps(req_rpc).encode('utf8'),
-        ).fetch()
+        ).fetch(verbose=verbose, logging_cb=logging_cb)
         res_rpc = jsonrpcclient.responses.parse(res_raw.json)
         Endpoint._check_response(res_raw.json, res_rpc)
         return res_raw.body

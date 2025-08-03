@@ -314,7 +314,11 @@ class Jsonrpc(SubCommand):
                 urls=ca.conf.endpoints,
                 headers=default_headers + ca.conf.headers + parse_headers(ca.ns),
                 basic=ca.conf.basic,
-            ).send(req)
+            ).send(
+                req,
+                verbose=ca.ns.verbose,
+                logging_cb=lambda msg: print(msg),
+            )
         except restapi.ConnectionError:
             print(
                 'ERROR: Could not connect to server.\n'
