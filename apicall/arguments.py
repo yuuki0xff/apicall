@@ -293,9 +293,9 @@ class Jsonrpc(SubCommand):
 
         convert: typing.Callable
         if ca.ns.raw_input:
-            convert = json.loads
-        else:
             convert = lambda a: a
+        else:
+            convert = json.loads
 
         params: typing.Union[tuple, dict, None]
         if ca.ns.keyword_args:
