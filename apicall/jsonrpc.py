@@ -35,10 +35,10 @@ class ErrorResponse(Exception):
     access to both the raw JSON data representing the error and the structured error
     object.
 
-    :ivar json: The raw JSON response representing the error.
+    :ivar json: The JSON returned by the JSON-RPC 2.0 server.
     :ivar response: The structured error response object.
     """
-    def __init__(self, res_json: typing.Any, res: jsonrpcclient.Error):
+    def __init__(self, res_json: str, res: jsonrpcclient.Error):
         self.json = res_json
         self.response = res
 
@@ -64,11 +64,11 @@ class Endpoint:
             data=json.dumps(req_rpc).encode('utf8'),
         ).fetch(verbose=verbose, logging_cb=logging_cb)
         res_rpc = jsonrpcclient.responses.parse(res_raw.json)
-        Endpoint._check_response(res_raw.json, res_rpc)
+        Endpoint._check_response(res_raw.body, res_rpc)
         return res_raw.body
 
     @staticmethod
-    def _check_response(res_json: typing.Any, res_rpc: typing.Any):
+    def _check_response(res_json: str, res_rpc: typing.Any):
         if isinstance(res_rpc, jsonrpcclient.Ok):
             return
         if isinstance(res_rpc, jsonrpcclient.Error):
