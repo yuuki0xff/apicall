@@ -43,7 +43,8 @@ class Request:
                     request=self,
                     _result=res,
                 )
-            except requests.ConnectionError:
+            except requests.ConnectionError as e:
+                self.logging_error(verbose, logging_cb, err=e)
                 # Maybe... hostname or port is incorrect.
                 # Try to other urls.
                 continue
@@ -72,6 +73,16 @@ class Request:
             cb(f'< {r.status_code} {r.reason}')
             for header, value in r.headers.items():
                 cb(f'< {header}: {value}')
+
+    def logging_error(self, verbose: int,
+                      cb: typing.Optional[typing.Callable[[str], None]],
+                      err: requests.ConnectionError):
+        if cb is None:
+            return
+        if verbose < SHOW_HEADERS:
+            return
+
+        cb(f'ERROR: {err}')
 
 
 @dataclass(frozen=True)
